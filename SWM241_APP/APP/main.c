@@ -45,6 +45,17 @@ void TIMR0_Handler(void)
 }
 
 
+void Flash_remap(uint32_t addr)
+{
+	/* 只能在APP中REMAP，在UserBoot中REMAP可能会导致访问UserBoot的代码被重定向到APP的代码 */
+	FMC->REMAP = (1 << FMC_REMAP_ON_Pos) | ((addr / 2048) << FMC_REMAP_OFFSET_Pos);
+	__NOP(); __NOP(); __NOP(); __NOP(); __NOP(); __NOP(); __NOP(); __NOP(); __NOP();
+	__NOP(); __NOP(); __NOP(); __NOP(); __NOP(); __NOP(); __NOP(); __NOP(); __NOP();
+	
+	__enable_irq();
+}
+
+
 void SerialInit(void)
 {
 	UART_InitStructure UART_initStruct;
